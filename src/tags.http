@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/tags
 
 ### obtener un tag por id
-GET http://localhost:3000/api/tags/9b83c797-7936-44e2-9bee-3a43c6ef
+GET http://localhost:3000/api/tags/e82d1b88-0a92-4cda-a1dd-4bf90c56332b
 
 ### crear un nuevo tag
 POST http://localhost:3000/api/tags
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### modificar un tag (PUT - recurso completo e idempotente)
-PUT http://localhost:3000/api/tags/7bc8122f-a7ed-4ac7-8d6b-ca3ddbfaab55
+PUT http://localhost:3000/api/tags/e82d1b88-0a92-4cda-a1dd-4bf90c56332b
 Content-Type: application/json
 
 {
@@ -23,3 +23,15 @@ Content-Type: application/json
   "descipcion" : "Actividad deportiva que incluye natacion",
   "tipo" : "Ejercitación"
 }
+
+### modificar un tag (PUT - recurso parcial)
+PATCH http://localhost:3000/api/tags/38ef1dad-c1f4-4415-ad67-189e84d602d2
+Content-Type: application/json
+
+{
+  "nombre" : "Gimnasio",
+  "descipcion" : "Entrenamientos de fuerza"
+}
+
+### borrar un tag
+DELETE http://localhost:3000/api/tags/4ef78b60-e1f2-4341-94e9-f53266a94fb6

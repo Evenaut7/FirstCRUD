@@ -26,6 +26,11 @@ function sanitizeTagInput(req: Request, res: Response, next: NextFunction){
   }
   //- Agregar Validaciones necesarias
 
+    Object.keys(req.body.sanitizedInput).forEach(key => {
+      if(req.body.sanitizedInput[key] === undefined){
+        delete req.body.sanitizedInput[key];
+      }
+    });
   next();
 }
 
@@ -55,7 +60,7 @@ app.post('/api/tags', sanitizeTagInput, (req, res) => {
 });
 
 
-// Modify()
+// ModifyAll()
 app.put('/api/tags/:id', sanitizeTagInput, (req, res) => {
   const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
   
@@ -66,6 +71,33 @@ app.put('/api/tags/:id', sanitizeTagInput, (req, res) => {
   tags[tagIdx] = {...tags[tagIdx], ...req.body.sanitizedInput}
 
   res.status(200).send({message: 'tag updated succesfully', data: tags[tagIdx]})
+});
+
+
+// PartialModify()
+app.patch('/api/tags/:id', sanitizeTagInput, (req, res) => {
+  const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
+  
+  if(tagIdx === -1) {
+    res.status(404).send({message: 'Tag not found'});
+  }
+  
+  tags[tagIdx] = {...tags[tagIdx], ...req.body.sanitizedInput}
+
+  res.status(200).send({message: 'tag updated succesfully', data: tags[tagIdx]})
+});
+
+
+//Delete()
+app.delete('/api/tags/:id', (req, res) => {
+  const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
+
+  if (tagIdx === -1){
+    res.status(400).send({message: 'Tag not found'})
+  }
+  tags.splice(tagIdx, 1);
+  res.status(200).send({message: 'Tag deleted succesfully'})
+
 });
 
 
