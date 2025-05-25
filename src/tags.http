@@ -1,0 +1,25 @@
+### obtener todos los tags 
+GET http://localhost:3000/api/tags
+
+### obtener un tag por id
+GET http://localhost:3000/api/tags/9b83c797-7936-44e2-9bee-3a43c6ef
+
+### crear un nuevo tag
+POST http://localhost:3000/api/tags
+Content-Type: application/json
+
+{
+  "nombre" : "Literatura",
+  "descipcion" : "Lugar donde se puede leer libros",
+  "tipo" : "Entretenimiento"
+}
+
+### modificar un tag (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/tags/7bc8122f-a7ed-4ac7-8d6b-ca3ddbfaab55
+Content-Type: application/json
+
+{
+  "nombre" : "Deportes Acuaticos",
+  "descipcion" : "Actividad deportiva que incluye natacion",
+  "tipo" : "Ejercitación"
+}
