@@ -1,6 +1,7 @@
 import { Repository } from "../shared/repository.js";
 import { Tag } from "./tag.js";
 
+
 const tags: Tag[] = [
   new Tag (
     'Cine', 'Actividad que incluye arte audiovisual', 'Enretenimiento'
@@ -8,13 +9,13 @@ const tags: Tag[] = [
   new Tag (
     'Deportes', 'Actividad que incluye algun deporte', 'Enretenimiento'
   )
-];
+]
 
 
 export class TagRepository implements Repository<Tag> {
   
   public findAll(): Tag[] | undefined {
-    return tags;
+    return tags
   }
 
   public findOne(item: { id: string; }): Tag | undefined {
@@ -22,16 +23,16 @@ export class TagRepository implements Repository<Tag> {
   }
 
   public add(item: Tag): Tag | undefined {
-    tags.push(item);
-    return item;
+    tags.push(item)
+    return item
   }
 
   public update(item: Tag): Tag | undefined {
      const tagIdx = tags.findIndex(tag => tag.id === item.id)
   
-    if(tagIdx !== -1) {;
+    if(tagIdx !== -1) {
       tags[tagIdx] = {...tags[tagIdx], ...item}
-      return tags[tagIdx];
+      return tags[tagIdx]
     }
   }
 
@@ -39,9 +40,9 @@ export class TagRepository implements Repository<Tag> {
     const tagIdx = tags.findIndex(tag => tag.id === item.id)
 
     if (tagIdx !== -1){
-      const deletedTag = tags[tagIdx];
-      tags.splice(tagIdx, 1);
-      return deletedTag;
+      const deletedTag = tags[tagIdx]
+      tags.splice(tagIdx, 1)
+      return deletedTag
     } 
   }
 
