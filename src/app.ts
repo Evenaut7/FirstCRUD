@@ -1,10 +1,13 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { Tag } from './tag.js';
+import express, { NextFunction, Request, response, Response } from 'express';
+import { Tag } from './tag/tag.js';
+import { TagRepository } from './tag/tag.respository.js';
 
 
 // Declaracion De Variables
 const app = express();
 app.use(express.json());
+
+const repository = new TagRepository;
 
 const tags: Tag[] = [
   new Tag (
@@ -31,19 +34,20 @@ function sanitizeTagInput(req: Request, res: Response, next: NextFunction){
       delete req.body.sanitizedInput[key];
     }
   });
+
   next();
 }
 
 
 // GetAll()
 app.get('/api/tags', (req, res) => {
-  res.json(tags);
+  res.json(repository.findAll());
 });
 
 
 // GetOne()
 app.get('/api/tags/:id', (req, res) => {
-  const aTag = tags.find(tag => tag.id === req.params.id);
+  const aTag = repository.findOne({id: req.params.id});
   if(!aTag) {
     res.status(404).send({message: 'Tag not found'});
     return;
@@ -56,52 +60,49 @@ app.get('/api/tags/:id', (req, res) => {
 app.post('/api/tags', sanitizeTagInput, (req, res) => {
   const input = req.body
   
-  const newTag = new Tag(input.nombre, input.descipcion, input.tipo);
+  const tagInput = new Tag(input.nombre, input.descipcion, input.tipo);
   
-  tags.push(newTag);
+  const newTag = repository.add(tagInput);
   res.status(201).send({message: 'Tag creado correctamente', data: newTag})
 });
 
 
 // ModifyAll()
 app.put('/api/tags/:id', sanitizeTagInput, (req, res) => {
-  const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
+  req.body.sanitizedInput.id = req.params.id
+
+  const modifiedTag = repository.update(req.body.sanitizedInput)
   
-  if(tagIdx === -1) {
+  if(!modifiedTag) {
     res.status(404).send({message: 'Tag not found'});
     return;
   }
-  
-  tags[tagIdx] = {...tags[tagIdx], ...req.body.sanitizedInput}
-
-  res.status(200).send({message: 'tag updated succesfully', data: tags[tagIdx]})
+  res.status(200).send({message: 'tag updated succesfully', data: modifiedTag})
 });
 
 
 // PartialModify()
 app.patch('/api/tags/:id', sanitizeTagInput, (req, res) => {
-  const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
+  req.body.sanitizedInput.id = req.params.id
+
+  const modifiedTag = repository.update(req.body.sanitizedInput)
   
-  if(tagIdx === -1) {
+  if(!modifiedTag) {
     res.status(404).send({message: 'Tag not found'});
     return;
   }
-  
-  tags[tagIdx] = {...tags[tagIdx], ...req.body.sanitizedInput}
-
-  res.status(200).send({message: 'tag updated succesfully', data: tags[tagIdx]})
+  res.status(200).send({message: 'tag updated succesfully', data: modifiedTag})
 });
 
 
 //Delete()
 app.delete('/api/tags/:id', (req, res) => {
-  const tagIdx = tags.findIndex(tag => tag.id === req.params.id)
+  const deletedTag = repository.delete({id: req.params.id})
 
-  if (tagIdx === -1){
+  if (!deletedTag){
     res.status(400).send({message: 'Tag not found'})
   } else {
-  tags.splice(tagIdx, 1);
-  res.status(200).send({message: 'Tag deleted succesfully'});
+    res.status(200).send({message: 'Tag deleted succesfully'});
   }
 
 });
